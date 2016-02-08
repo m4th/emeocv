@@ -13,13 +13,12 @@
 
 class Plausi {
 public:
-    Plausi(double maxPower = 50. /*kW*/, int window = 13);
+    Plausi(int window = 13);
     bool check(const std::string & value, time_t time);
     double getCheckedValue();
     time_t getCheckedTime();
 private:
     std::string queueAsString();
-    double _maxPower;
     int _window;
     std::deque<std::pair<time_t, double> > _queue;
     time_t _time;
