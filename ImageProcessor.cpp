@@ -26,13 +26,14 @@ public:
 };
 
 ImageProcessor::ImageProcessor(const Config & config) :
-        _config(config), _debugWindow(false), _debugSkew(false), _debugDigits(false), _debugEdges(false) {
+        _config(config), _debugWindow(true), _debugSkew(true), _debugDigits(true), _debugEdges(true) {
 }
 
 /**
  * Set the input image.
  */
 void ImageProcessor::setInput(cv::Mat & img) {
+    img = img(cv::Rect(230, 110, 300, 90));
     _img = img;
 }
 
@@ -74,36 +75,13 @@ void ImageProcessor::showImage() {
  */
 void ImageProcessor::process() {
     _digits.clear();
-
     // convert to gray
     cvtColor(_img, _imgGray, CV_BGR2GRAY);
-
-    // initial rotation to get the digits up
-    rotate(_config.getRotationDegrees());
-
-    // detect and correct remaining skew (+- 30 deg)
-    float skew_deg = detectSkew();
-    rotate(skew_deg);
-
     // find and isolate counter digits
     findCounterDigits();
 
     if (_debugWindow) {
         showImage();
-    }
-}
-
-/**
- * Rotate image.
- */
-void ImageProcessor::rotate(double rotationDegrees) {
-    cv::Mat M = cv::getRotationMatrix2D(cv::Point(_imgGray.cols / 2, _imgGray.rows / 2), rotationDegrees, 1);
-    cv::Mat img_rotated;
-    cv::warpAffine(_imgGray, img_rotated, M, _imgGray.size());
-    _imgGray = img_rotated;
-    if (_debugWindow) {
-        cv::warpAffine(_img, img_rotated, M, _img.size());
-        _img = img_rotated;
     }
 }
 
@@ -235,8 +213,7 @@ void ImageProcessor::findCounterDigits() {
     // find contours in whole image
     std::vector<std::vector<cv::Point> > contours, filteredContours;
     std::vector<cv::Rect> boundingBoxes;
-    cv::findContours(edges, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE);
-
+    cv::findContours(edges, contours, CV_RETR_CCOMP, CV_CHAIN_APPROX_NONE);
     // filter contours by bounding rect size
     filterContours(contours, boundingBoxes, filteredContours);
 

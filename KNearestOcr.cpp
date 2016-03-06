@@ -18,7 +18,7 @@
 #include "KNearestOcr.h"
 
 KNearestOcr::KNearestOcr(const Config & config) :
-        _pModel(0), _config(config) {
+         _config(config) {
 }
 
 KNearestOcr::~KNearestOcr() {
@@ -47,7 +47,7 @@ int KNearestOcr::learn(const cv::Mat & img) {
 int KNearestOcr::learn(const std::vector<cv::Mat>& images) {
     int key = 0;
     for (std::vector<cv::Mat>::const_iterator it = images.begin();
-            it < images.end() && key != 's' && key != 'q'; ++it) {
+         it < images.end() && key != 's' && key != 'q'; ++it) {
         key = learn(*it);
     }
     return key;
@@ -91,9 +91,9 @@ char KNearestOcr::recognize(const cv::Mat& img) {
             throw std::runtime_error("Model is not initialized");
         }
         cv::Mat results, neighborResponses, dists;
-        float result = _pModel->find_nearest(prepareSample(img), 2, results, neighborResponses, dists);
+        float result = _pModel->findNearest(prepareSample(img), 2, results, neighborResponses, dists);
         if (0 == int(neighborResponses.at<float>(0, 0) - neighborResponses.at<float>(0, 1))
-                && dists.at<float>(0, 0) < _config.getOcrMaxDist()) {
+            && dists.at<float>(0, 0) < _config.getOcrMaxDist()) {
             // valid character if both neighbors have the same value and distance is below ocrMaxDist
             cres = '0' + (int) result;
         } else if (rlog.isInfoEnabled()) {
@@ -114,7 +114,7 @@ char KNearestOcr::recognize(const cv::Mat& img) {
 std::string KNearestOcr::recognize(const std::vector<cv::Mat>& images) {
     std::string result;
     for (std::vector<cv::Mat>::const_iterator it = images.begin();
-            it != images.end(); ++it) {
+         it != images.end(); ++it) {
         result += recognize(*it);
     }
     return result;
@@ -134,6 +134,6 @@ cv::Mat KNearestOcr::prepareSample(const cv::Mat& img) {
  * Initialize the model.
  */
 void KNearestOcr::initModel() {
-    _pModel = new CvKNearest(_samples, _responses);
+     _pModel = cv::ml::KNearest::create();
 }
 

@@ -26,7 +26,7 @@ endif
 
 BIN := $(OUTDIR)/$(PROJECT)
 
-LDLIBS = -lopencv_core -lopencv_imgproc -lopencv_highgui -lopencv_ml -lrrd -llog4cpp
+LDLIBS = -lopencv_shape -lopencv_stitching -lopencv_objdetect -lopencv_videostab -lopencv_calib3d -lopencv_features2d -lopencv_highgui -lopencv_videoio -lopencv_imgcodecs -lopencv_video -lopencv_photo -lopencv_ml -lopencv_imgproc -lopencv_flann -lopencv_core  -lrrd -llog4cpp
 
 SUFFIXES= .cpp .o
 .SUFFIXES: $(SUFFIXES) .

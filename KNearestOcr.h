@@ -11,6 +11,7 @@
 #include <string>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/ml/ml.hpp>
+#include <opencv2/core/core.hpp>
 
 #include "Config.h"
 
@@ -33,7 +34,7 @@ private:
 
     cv::Mat _samples;
     cv::Mat _responses;
-    CvKNearest* _pModel;
+    cv::Ptr<KNearest> _pModel;
     Config _config;
 };
 
