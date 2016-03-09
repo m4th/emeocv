@@ -5,7 +5,7 @@
 
 #include <vector>
 #include <iostream>
-
+#include "opencv2/photo.hpp"
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
@@ -33,7 +33,9 @@ ImageProcessor::ImageProcessor(const Config & config) :
  * Set the input image.
  */
 void ImageProcessor::setInput(cv::Mat & img) {
-    img = img(cv::Rect(230, 110, 300, 90));
+    cv::Mat dst;
+   // img = img(cv::Rect(230, 110, 300, 90));
+    //threshold(img, dst, 95, 255, 3 );
     _img = img;
 }
 
@@ -77,6 +79,14 @@ void ImageProcessor::process() {
     _digits.clear();
     // convert to gray
     cvtColor(_img, _imgGray, CV_BGR2GRAY);
+    fastNlMeansDenoising(_imgGray, _imgGray, 10);
+    cv::imshow("Denoising", _imgGray);	
+    _imgCalque = imread("./images/calque.png");
+    cvtColor(_imgCalque, _imgCalqueGray, CV_BGR2GRAY);
+    addWeighted( _imgGray, 0.65, _imgCalqueGray, 0.35, 0.0, _imgGray);
+    cv::imshow("ImageProcessor1", _imgGray);
+    threshold(_imgGray, _imgGray, 135, 255, 3);	 
+     cv::imshow("ImageProcessor2", _imgGray);
     // find and isolate counter digits
     findCounterDigits();
 
@@ -159,7 +169,7 @@ float ImageProcessor::detectSkew() {
 cv::Mat ImageProcessor::cannyEdges() {
     cv::Mat edges;
     // detect edges
-    cv::Canny(_imgGray, edges, _config.getCannyThreshold1(), _config.getCannyThreshold2());
+    cv::Canny(_imgGray, edges, _config.getCannyThreshold1(), _config.getCannyThreshold2(), 3);
     return edges;
 }
 

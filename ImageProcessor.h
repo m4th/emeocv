@@ -12,7 +12,7 @@
 
 #include "ImageInput.h"
 #include "Config.h"
-
+using namespace cv;
 class ImageProcessor {
 public:
     ImageProcessor(const Config & config);
@@ -44,6 +44,8 @@ private:
 
     cv::Mat _img;
     cv::Mat _imgGray;
+    cv::Mat _imgCalque;
+    cv::Mat _imgCalqueGray;
     std::vector<cv::Mat> _digits;
     Config _config;
     bool _debugWindow;
